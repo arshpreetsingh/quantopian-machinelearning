@@ -19,7 +19,10 @@ def create_model(context, data):
     # Get the relevant daily prices
     recent_prices = data.history(context.assets, 'price',context.history_range, '1d')
    
- 
+    context.ma_50 =recent_prices.values[-50:].mean()     
+    context.ma_200 = recent_prices.values[-200:].mean() 
+    #print context.ma_50
+    #print context.ma_200
     time_lags = pd.DataFrame(index=recent_prices.index)
     time_lags['price']=recent_prices.values
     time_lags['returns']=(time_lags['price'].pct_change()).fillna(0.0001)
@@ -42,14 +45,15 @@ def trade(context, data):
         time_lags['price']=new_recent_prices.values
         time_lags['returns']=(time_lags['price'].pct_change()).fillna(0.0001)
         time_lags['lag1'] = (time_lags['returns'].shift(1)).fillna(0.0001)
-        time_lags['lag2'] = (time_lags['returns'].shift(2)).fillna(0.0001)
         
-        X = time_lags[['lag1','lag2']]
+        X = time_lags[['returns','lag1']]
         prediction = context.model.predict(X)
-        if prediction > 0:
+        if prediction > 0 and context.ma_50 > context.ma_200:
             order_target_percent(context.assets, 1.0)
-        else:
+        elif prediction < 0 and context.ma_50 < context.ma_200:
             order_target_percent(context.assets, -1.0)
-
+        else:
+            pass
+        
 def handle_data(context, data):
     pass
