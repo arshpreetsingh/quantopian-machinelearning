@@ -1,0 +1,2 @@
+In strategy three trade function is running each weekend and create_model function is 
+running each start of weekday and that is Monday.
