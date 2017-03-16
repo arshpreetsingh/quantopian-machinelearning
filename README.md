@@ -6,3 +6,4 @@ Close Goals-
 2. Implement various stocks insteadof just one
 3. use pipeline methods to make things happen
 4. Also use Zipline as offline library and implement using Jupyter-notebook
+5. A trading Strategy using Kalman filter
